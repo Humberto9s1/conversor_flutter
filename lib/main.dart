@@ -23,8 +23,24 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final realController = TextEditingController();
+  final dollarController = TextEditingController();
+  final euroController = TextEditingController();
+
   double dollar;
   double euro;
+
+  void _realChange(String text) {
+    print(text);
+  }
+
+  void _dollarChange(String text) {
+    print(text);
+  }
+
+  void _euroChange(String text) {
+    print(text);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,27 +60,27 @@ class _HomeState extends State<Home> {
                 case ConnectionState.waiting:
                   return Center(
                       child: Text(
-                    "Carregando Dados...",
-                    style: TextStyle(
-                      color: Colors.amber,
-                      fontSize: 25.0,
-                    ),
-                    textAlign: TextAlign.center,
-                  ));
+                        "Carregando Dados...",
+                        style: TextStyle(
+                          color: Colors.amber,
+                          fontSize: 25.0,
+                        ),
+                        textAlign: TextAlign.center,
+                      ));
                 default:
                   if (snapshot.hasError) {
                     return Center(
                         child: Text(
-                      "Erro ao carregar os dados",
-                      style: TextStyle(
-                        color: Colors.amber,
-                        fontSize: 25.0,
-                      ),
-                      textAlign: TextAlign.center,
-                    ));
+                          "Erro ao carregar os dados",
+                          style: TextStyle(
+                            color: Colors.amber,
+                            fontSize: 25.0,
+                          ),
+                          textAlign: TextAlign.center,
+                        ));
                   } else {
                     dollar =
-                        snapshot.data["results"]["currencies"]["USD"]["buy"];
+                    snapshot.data["results"]["currencies"]["USD"]["buy"];
                     euro = snapshot.data["results"]["currencies"]["EUR"]["buy"];
                     return SingleChildScrollView(
                       child: Column(
@@ -75,65 +91,11 @@ class _HomeState extends State<Home> {
                             size: 150.0,
                             color: Colors.amber,
                           ),
-                          TextField(
-                              style: TextStyle(color: Colors.amber),
-                              decoration: InputDecoration(
-                                  labelText: "REAIS",
-                                  labelStyle: TextStyle(
-                                      color: Colors.amber, fontSize: 25.0),
-                                  border: OutlineInputBorder(),
-                                  prefixText: "R\$ ",
-                                  prefixStyle: TextStyle(color: Colors.amber),
-                                  //colocar essa pra prefixtext
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.amber),
-                                  ),
-                                  //colocar essa pra borda mudar cor na seleção
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                    color: Colors.amber,
-                                  )) //colocar essa pra borda ficar OURO antes da seleção
-                                  )),
+                          buildTextField("REAIS", "R\$ ", realController, _realChange),
                           Divider(),
-                          TextField(
-                              style: TextStyle(color: Colors.amber),
-                              decoration: InputDecoration(
-                                  labelText: "DOLLAR",
-                                  labelStyle: TextStyle(
-                                      color: Colors.amber, fontSize: 25.0),
-                                  border: OutlineInputBorder(),
-                                  prefixText: "US\$ ",
-                                  prefixStyle: TextStyle(color: Colors.amber),
-                                  //colocar essa pra prefixtext
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.amber),
-                                  ),
-                                  //colocar essa pra borda mudar cor na seleção
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                    color: Colors.amber,
-                                  )) //colocar essa pra borda ficar OURO antes da seleção
-                                  )),
+                          buildTextField("DOLLAR", "US\$ ", dollarController, _dollarChange),
                           Divider(),
-                          TextField(
-                              style: TextStyle(color: Colors.amber),
-                              decoration: InputDecoration(
-                                  labelText: "EURO",
-                                  labelStyle: TextStyle(
-                                      color: Colors.amber, fontSize: 25.0),
-                                  border: OutlineInputBorder(),
-                                  prefixText: "\€ ",
-                                  prefixStyle: TextStyle(color: Colors.amber),
-                                  //colocar essa pra prefixtext
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.amber),
-                                  ),
-                                  //colocar essa pra borda mudar cor na seleção
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                    color: Colors.amber,
-                                  )) //colocar essa pra borda ficar OURO antes da seleção
-                                  )),
+                          buildTextField("EURO", "€ ", euroController, _euroChange),
                         ],
                       ),
                     );
@@ -141,4 +103,30 @@ class _HomeState extends State<Home> {
               }
             }));
   }
+}
+
+Widget buildTextField(String label, String prefix, TextEditingController c,
+    Function f) {
+  return TextField(
+    controller: c,
+    style: TextStyle(color: Colors.amber),
+    decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(color: Colors.amber, fontSize: 25.0),
+        border: OutlineInputBorder(),
+        prefixText: prefix,
+        prefixStyle: TextStyle(color: Colors.amber),
+        //colocar essa pra prefixtext
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.white),
+        ),
+        //colocar essa pra borda mudar cor na seleção
+        enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.amber,
+            )) //colocar essa pra borda ficar OURO antes da seleção
+    ),
+    onChanged: f,
+    keyboardType: TextInputType.number,
+  );
 }
