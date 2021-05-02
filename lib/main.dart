@@ -29,17 +29,33 @@ class _HomeState extends State<Home> {
 
   double dollar;
   double euro;
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  void _resetFields() {
+    realController.text = "";
+    dollarController.text = "";
+    euroController.text = "";
+    setState(() {
+      _formKey = GlobalKey<FormState>();
+    });
+  }
 
   void _realChange(String text) {
-    print(text);
+    double real = double.parse(text);
+    dollarController.text = (real/dollar).toStringAsFixed(2);
+    euroController.text = (real/euro).toStringAsFixed(2);
   }
 
   void _dollarChange(String text) {
-    print(text);
+    double dollar = double.parse(text);
+    realController.text = (dollar*this.dollar).toStringAsFixed(2);
+    euroController.text = (dollar*this.dollar/euro).toStringAsFixed(2);
   }
 
   void _euroChange(String text) {
-    print(text);
+    double euro = double.parse(text);
+    realController.text = (euro * this.euro).toStringAsFixed(2);
+    dollarController.text = (euro * this.euro / dollar).toStringAsFixed(2);
   }
 
   @override
@@ -50,6 +66,9 @@ class _HomeState extends State<Home> {
           title: Text("\$ Conversor \$"),
           backgroundColor: Colors.amber,
           centerTitle: true,
+          actions: [
+            IconButton(icon: Icon(Icons.refresh), onPressed: _resetFields)
+          ],
         ),
         body: FutureBuilder<Map>(
             future: getData(),
@@ -127,6 +146,7 @@ Widget buildTextField(String label, String prefix, TextEditingController c,
             )) //colocar essa pra borda ficar OURO antes da seleção
     ),
     onChanged: f,
-    keyboardType: TextInputType.number,
+    keyboardType: TextInputType.numberWithOptions(decimal: true),
+    //keyboardType: TextInputType.number,
   );
 }
